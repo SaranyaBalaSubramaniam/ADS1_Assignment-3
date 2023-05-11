@@ -19,25 +19,27 @@ from scipy.optimize import curve_fit
 import itertools as iter
 
 # Inserting the indicator IDs for World Development Indicators(WDI) dataset
-indicator1 = ["EN.ATM.CO2E.PC", "EG.USE.ELEC.KH.PC"]
-indicator2 = ["EN.ATM.METH.KT.CE", "EG.ELC.ACCS.ZS"]
+Ind_1 = ["EN.ATM.CO2E.PC", "EG.USE.ELEC.KH.PC"]
+Ind_2 = ["EN.ATM.METH.KT.CE", "EG.ELC.ACCS.ZS"]
 
 # Selecting country codes representing the countries of interest
 country_code = ['USA', 'BRA', 'CHE', 'GRC', 'ITA']
 
 # Read func returns data for most recent 30 yrs for each indicator & country
+
+
 def read(indicator, country_code):
     """Read World Bank data for a specific indicator and country."""
-   
+
     df = wb.data.DataFrame(indicator, country_code, mrv=30)
     return df
 
 
 # Reads a CSV file with CO2 emissions data and returns a pandas DataFrame
-file = "co2 emission.csv"
+file_path = "co2 emission.csv"
 
 # Function to read indicator1 and country_code
-data = read(indicator1, country_code)
+data = read(Ind_1, country_code)
 
 # Preprocessing data by removing 'YR' suffix from column & giving new index
 data.columns = [i.replace('YR', '') for i in data.columns]
@@ -46,7 +48,7 @@ data.index.names = ['Country', 'Year']
 data.columns
 
 # creating another dataframe
-data1 = read(indicator2, country_code)
+data1 = read(Ind_2, country_code)
 
 # removing YR and giving index names to data1
 data1.columns = [i.replace('YR', '') for i in data1.columns]
@@ -67,9 +69,11 @@ dt
 dt["Year"] = pd.to_numeric(dt["Year"])
 
 # function to normalise the data
+
+
 def norm_df(df):
-    """Normalize the numerical columns of a DataFrame to the range [0, 1]."""
-   
+    """Normalize the numerical columns of a DataFrame to the range"""
+
     y = df.iloc[:, 2:]
     df.iloc[:, 2:] = (y-y.min()) / (y.max() - y.min())
     return df
@@ -91,13 +95,13 @@ plt.savefig("plot.png")
 plt.show()
 
 # function to find the error
+
+
 def err_ranges(x, func, param, sigma):
     """
     Calculate the upper and lower error bounds
     for a model function.
-  
-    """
-    """initiate arrays for lower and upper limits"""
+    initiate arrays for lower and upper limits"""
     lower = func(x, *param)
     upper = lower
     uplow = []
@@ -126,7 +130,7 @@ x, y = val[:, 1], val[:, 2]
 def fct(x, a, b, c):
     """
     Evaluate a quadratic function at the given x-value
-    
+
     """
     return a*x**2+b*x+c
 
@@ -151,7 +155,7 @@ print(sigma)
 low, up = err_ranges(x, fct, prmet, sigma)
 
 # finding the emission rate in the coming 10 years
-print("Forcasted CO2 emission")
+print("Forcasted CO2 emission in next 10 years")
 low, up = err_ranges(2030, fct, prmet, sigma)
 print("2030 between", low, "and", up)
 dt2 = dt[(dt['Country'] == 'CHE')]
@@ -189,7 +193,7 @@ print(sigma)
 low, up = err_ranges(x2, fct, prmet, sigma)
 
 # finding the emission rate in the coming 10 years
-print("Forcasted CO2 emission")
+print("Forcasted CO2 emission in next 10 years")
 low, up = err_ranges(2030, fct, prmet, sigma)
 print("2030 between", low, "and", up)
 dt3 = dt[(dt['Country'] == 'BRA')]
