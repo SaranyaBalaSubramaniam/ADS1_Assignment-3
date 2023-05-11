@@ -3,7 +3,7 @@
 """
 Created on Tue May  9 13:13:36 2023
 
-@author: mukeshavudaiappan
+@author: Saranya
 """
 # Importing required libraries
 import pandas as pd
@@ -26,14 +26,11 @@ Ind_2 = ["EN.ATM.METH.KT.CE", "EG.ELC.ACCS.ZS"]
 country_code = ['USA', 'BRA', 'CHE', 'GRC', 'ITA']
 
 # Read func returns data for most recent 30 yrs for each indicator & country
-
-
 def read(indicator, country_code):
     """Read World Bank data for a specific indicator and country."""
 
     df = wb.data.DataFrame(indicator, country_code, mrv=30)
     return df
-
 
 # Reads a CSV file with CO2 emissions data and returns a pandas DataFrame
 file_path = "co2 emission.csv"
@@ -69,15 +66,12 @@ dt
 dt["Year"] = pd.to_numeric(dt["Year"])
 
 # function to normalise the data
-
-
 def norm_df(df):
     """Normalize the numerical columns of a DataFrame to the range"""
 
     y = df.iloc[:, 2:]
     df.iloc[:, 2:] = (y-y.min()) / (y.max() - y.min())
     return df
-
 
 dt_norm = norm_df(dt)
 df_fit = dt_norm.drop('Country', axis=1)
@@ -95,8 +89,6 @@ plt.savefig("plot.png")
 plt.show()
 
 # function to find the error
-
-
 def err_ranges(x, func, param, sigma):
     """
     Calculate the upper and lower error bounds
@@ -126,14 +118,12 @@ dt1
 val = dt1.values
 x, y = val[:, 1], val[:, 2]
 
-
 def fct(x, a, b, c):
     """
     Evaluate a quadratic function at the given x-value
 
     """
     return a*x**2+b*x+c
-
 
 prmet, cov = opt.curve_fit(fct, x, y)
 dt1["pop_log"] = fct(x, *prmet)
@@ -172,7 +162,6 @@ def fct(x, a, b, c):
     """
     return a*x**2+b*x+c
 
-
 prmet, cov = opt.curve_fit(fct, x2, y2)
 dt2["pop_log"] = fct(x2, *prmet)
 print("Parameters are:", prmet)
@@ -203,13 +192,11 @@ dt3
 val3 = dt3.values
 x3, y3 = val3[:, 1], val3[:, 2]
 
-
 def fct(x, a, b, c):
     """
     Evaluate a quadratic function at the given x-value
     """
     return a*x**2+b*x+c
-
 
 prmet, cov = opt.curve_fit(fct, x3, y3)
 dt3["pop_log"] = fct(x3, *prmet)
